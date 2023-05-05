@@ -37,7 +37,7 @@ class User(APIView):
         try:
             user = UserProfile.objects.get(id=user_id)
             return CustomResponse(model_to_dict(user), "success", status.HTTP_200_OK).response()
-        except Exception as e:
+        except:
             return CustomResponse(None, "User does not exists", status.HTTP_404_NOT_FOUND).response()
 
     def post(self, request):
@@ -56,7 +56,7 @@ class User(APIView):
                 return CustomResponse(str(access_token), "User already exists", status.HTTP_200_OK).response()
             else:
                 return CustomResponse(None, "Wrong credentials", status.HTTP_400_BAD_REQUEST).response()
-        except Exception as e:
+        except:
 
             new_user = UserProfile.objects.create_user(
                 username, email)
