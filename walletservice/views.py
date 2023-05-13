@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Wallet
+from .models import *
 from django.forms.models import model_to_dict
 from random import randrange
 
@@ -23,25 +23,29 @@ class CustomResponse():
         })
 
 
-class Wallet(APIView):
+class Wallets(APIView):
     def get(self, request):
         if request.user.is_authenticated == False:
             return CustomResponse(None, "error",  status.HTTP_401_UNAUTHORIZED).response()
 
-        wallet_id = request.GET.get('id')
-        if wallet_id is None:
+        account_numer = request.GET.get('acc_num')
+        current_user = request.user
+
+        if account_numer is None:
             return CustomResponse(None, "error", status.HTTP_401_UNAUTHORIZED).response()
 
         try:
-            current_wallet = Wallet.objects.get(id=wallet_id)
+            current_wallet = current_user.wallets.filter(
+                account_number=account_numer).first()
             return CustomResponse(model_to_dict(current_wallet), "success", status.HTTP_200_OK).response()
-        except:
+        except Exception as e:
+            print(e)
             return CustomResponse(None, "Wallet does not exists", status.HTTP_404_NOT_FOUND).response()
 
     def post(self, request):
         body = request.data
         opening_balance = body.get('opening_balance')
-        closing_balance = body.get('opening_balance')
+        closing_balance = body.get('closing_balance')
         account_number = self.get_account_number()
 
         if request.user.is_authenticated == False:
@@ -67,7 +71,7 @@ class Wallet(APIView):
             return account_number
 
 
-class Transaction(APIView):
+class Transactions(APIView):
     def get(self, request):
         if request.user.is_authenticated == False:
             return CustomResponse(None, "error",  status.HTTP_401_UNAUTHORIZED).response()
