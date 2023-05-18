@@ -42,7 +42,8 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'rest_framework.authtoken',
-    'rest_framework_simplejwt.token_blacklist'
+    'rest_framework_simplejwt.token_blacklist',
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -144,3 +145,15 @@ SIMPLE_JWT = {
 }
 
 AUTH_USER_MODEL = 'userservice.UserProfile'
+
+CRONJOBS = [
+    ('*/1 * * * *', 'walletservice.cron.get_transaction_report')
+]
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'sandysaimon1997@gmail.com'
+EMAIL_HOST_PASSWORD = 'Sandeep@1997'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
